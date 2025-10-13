@@ -1,5 +1,5 @@
 // app/page.tsx
-// import Hero from '@/components/Hero';
+import Hero from '@/components/Hero';
 // import SectionGrid from '@/components/SectionGrid';
 // import ArticleList from '@/components/ArticleList';
 // import VideoBanner from '@/components/VideoBanner';
@@ -9,7 +9,8 @@
 export default function HomePage() {
   return (
     <>
-    Hello World SeeLessSeeBetter
+   
+    <Hero />
       {/* <Hero />
       <VideoBanner />
       <SectionGrid sections={sections} />
