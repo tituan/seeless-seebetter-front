@@ -84,10 +84,9 @@ export default function LoadMoreList({
       <ul className={listClassName}>
         {items.map((a) =>
           renderItem ? (
-            // rendu custom (avec tes classes SCSS)
-            <>{renderItem(a)}</>
+            // ✅ on ajoute une key sur l’élément retourné
+            <div key={a._id}>{renderItem(a)}</div>
           ) : (
-            // rendu par défaut (fallback)
             <li key={a._id} className="border rounded-xl p-4">
               <Link
                 href={`/categories/${category}/${a.slug}`}
@@ -95,14 +94,11 @@ export default function LoadMoreList({
               >
                 {a.title}
               </Link>
-              {a.excerpt && (
-                <p className="mt-2 text-sm opacity-80">{a.excerpt}</p>
-              )}
+              {a.excerpt && <p className="mt-2 text-sm opacity-80">{a.excerpt}</p>}
               <div className="mt-2 text-xs opacity-60">
                 {(a.author ?? "SLSB") +
                   (a.publishedAt
-                    ? " — " +
-                      new Date(a.publishedAt).toLocaleDateString("fr-FR")
+                    ? " — " + new Date(a.publishedAt).toLocaleDateString("fr-FR")
                     : "")}
               </div>
             </li>
