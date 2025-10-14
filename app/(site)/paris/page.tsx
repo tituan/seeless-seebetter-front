@@ -2,13 +2,18 @@ import Container from "@/components/Container";
 import Link from "next/link";
 import { API, fetchJSON } from "@/lib/api";
 import s from "./paris.module.scss";
-import ViewAllButton from "./ViewAllButton";
+import ShowRest from "./ShowRest"; // remplace l'ancien ViewAllButton
 
 export const dynamic = "force-dynamic";
 
 type Article = {
-  _id: string; title: string; slug: string;
-  imageUrl?: string; excerpt?: string; publishedAt?: string; author?: string;
+  _id: string;
+  title: string;
+  slug: string;
+  imageUrl?: string;
+  excerpt?: string;
+  publishedAt?: string;
+  author?: string;
 };
 
 export default async function ParisPage() {
@@ -41,7 +46,9 @@ export default async function ParisPage() {
                       {a.excerpt && <p className={s.hero__excerpt}>{a.excerpt}</p>}
                       <div className={s.hero__meta}>
                         {(a.author ?? "SLSB") +
-                          (a.publishedAt ? " — " + new Date(a.publishedAt).toLocaleDateString("fr-FR") : "")}
+                          (a.publishedAt
+                            ? " — " + new Date(a.publishedAt).toLocaleDateString("fr-FR")
+                            : "")}
                       </div>
                     </div>
                   </Link>
@@ -67,10 +74,10 @@ export default async function ParisPage() {
             );
           })()}
 
-          {/* CTA */}
+          {/* CTA : afficher le reste des articles sur place */}
           {total > 4 && (
             <div className={s.ctaWrap}>
-              <ViewAllButton />
+              <ShowRest apiBase={API} />
             </div>
           )}
         </>
