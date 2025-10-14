@@ -1,5 +1,7 @@
-// app/lib/routes.ts
-const SECTION_PAGES: Record<string, string> = {
+import type { Route } from "next";
+
+// Liste des sections avec leur landing page
+const SECTION_PAGES = {
   paris: "/paris",
   fashion: "/fashion",
   art: "/art",
@@ -9,9 +11,18 @@ const SECTION_PAGES: Record<string, string> = {
   restos: "/restos",
   shopping: "/shopping",
   blog: "/blog",
-};
+} as const;
 
-export function categoryLandingPath(category: string) {
-  const key = (category || "").toLowerCase();
-  return SECTION_PAGES[key] ?? `/categories/${key}`;
+type SectionKey = keyof typeof SECTION_PAGES;
+
+/**
+ * Retourne la landing page d'une catégorie
+ * (ex: "fashion" → "/fashion", "paris" → "/paris")
+ */
+export function categoryLandingPath(category: string): Route {
+  const key = (category || "").toLowerCase() as SectionKey;
+  if (key in SECTION_PAGES) {
+    return SECTION_PAGES[key] as Route;
+  }
+  return (`/categories/${key}`) as Route; // fallback typé
 }

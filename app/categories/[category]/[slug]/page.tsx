@@ -4,6 +4,7 @@ import Link from "next/link";
 import s from "./article.module.scss";
 import DateText from "@/components/DateText";
 import { categoryLandingPath } from "@/lib/routes";
+import type { Route } from "next"; // ✅ pour typed routes
 
 export const dynamic = "force-dynamic";
 
@@ -19,26 +20,25 @@ type Article = {
   publishedAt?: string;  // ISO
 };
 
-// ⬅️ params est une Promise en Next 15
+// ✅ sur Next 15, params est asynchrone
 type PageProps = {
   params: Promise<{ category: string; slug: string }>;
 };
 
 export default async function ArticlePage({ params }: PageProps) {
-  // ✅ attendre la promesse
   const { category, slug } = await params;
 
-  // 1) Essai par /by-category/:category/:slug
-  const byCatUrl = `${API}/api/articles/by-category/${category}/${slug}`;
+  // 🔹 On tente d’abord via /by-category/:category/:slug
+  const byCategoryUrl = `${API}/api/articles/by-category/${category}/${slug}`;
   let article: Article | null = null;
 
   try {
-    article = await fetchJSON<Article>(byCatUrl);
+    article = await fetchJSON<Article>(byCategoryUrl);
   } catch {
     article = null;
   }
 
-  // 2) Fallback par /api/articles/:slug
+  // 🔹 Si non trouvé, fallback sur /api/articles/:slug
   if (!article?._id) {
     try {
       const a2 = await fetchJSON<Article>(`${API}/api/articles/${slug}`);
@@ -46,9 +46,10 @@ export default async function ArticlePage({ params }: PageProps) {
         return <ArticleView category={category} article={a2} />;
       }
     } catch {
-      // ignore
+      // rien
     }
 
+    // 🔹 Si toujours rien : erreur + lien retour
     return (
       <Container>
         <div className={s.wrap}>
@@ -64,6 +65,7 @@ export default async function ArticlePage({ params }: PageProps) {
   return <ArticleView category={category} article={article} />;
 }
 
+// ✅ Composant d’affichage principal
 function ArticleView({
   category,
   article,
@@ -71,7 +73,7 @@ function ArticleView({
   category: string;
   article: Article;
 }) {
-  const backHref = categoryLandingPath(category);
+  const backHref = categoryLandingPath(category) as Route; // ✅ typed route
 
   return (
     <Container>
@@ -85,12 +87,14 @@ function ArticleView({
           </div>
         </header>
 
+        {/* ✅ Image principale */}
         {article.imageUrl && (
           <div className={s.cover}>
             <img src={article.imageUrl} alt="" />
           </div>
         )}
 
+        {/* ✅ Contenu HTML */}
         {article.content && (
           <div
             className={s.content}
@@ -98,6 +102,7 @@ function ArticleView({
           />
         )}
 
+        {/* ✅ Bouton retour vers la bonne section */}
         <div className={s.back}>
           <Link href={backHref}>← Retour aux articles</Link>
         </div>

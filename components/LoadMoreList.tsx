@@ -1,6 +1,13 @@
 "use client";
 
-import { ReactNode, useEffect, useRef, useState } from "react";
+import {
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  isValidElement,
+  cloneElement,
+} from "react";
 import Link from "next/link";
 
 type Article = {
@@ -19,7 +26,8 @@ type Props = {
   initialSkip?: number;     // ex: 4 si 4 articles déjà affichés
   pageSize?: number;        // ex: 5
   listClassName?: string;   // classes pour le <ul>
-  renderItem?: (a: Article) => ReactNode; // rendu custom d’un item
+  /** Doit idéalement retourner un <li>…</li>. La key sera ajoutée si absente. */
+  renderItem?: (a: Article) => ReactNode;
 };
 
 export default function LoadMoreList({
@@ -82,11 +90,23 @@ export default function LoadMoreList({
   return (
     <div>
       <ul className={listClassName}>
-        {items.map((a) =>
-          renderItem ? (
-            // ✅ on ajoute une key sur l’élément retourné
-            <div key={a._id}>{renderItem(a)}</div>
-          ) : (
+        {items.map((a) => {
+          if (renderItem) {
+            const node = renderItem(a);
+            // Si le node est un élément React, on lui injecte la key s'il n'en a pas
+            if (isValidElement(node)) {
+              return cloneElement(node, { key: (node.key as string) ?? a._id });
+            }
+            // Si ce n'est pas un élément (rare), fallback propre
+            return (
+              <li key={a._id} className="border rounded-xl p-4">
+                {node}
+              </li>
+            );
+          }
+
+          // Rendu par défaut
+          return (
             <li key={a._id} className="border rounded-xl p-4">
               <Link
                 href={`/categories/${category}/${a.slug}`}
@@ -94,16 +114,19 @@ export default function LoadMoreList({
               >
                 {a.title}
               </Link>
-              {a.excerpt && <p className="mt-2 text-sm opacity-80">{a.excerpt}</p>}
+              {a.excerpt && (
+                <p className="mt-2 text-sm opacity-80">{a.excerpt}</p>
+              )}
               <div className="mt-2 text-xs opacity-60">
                 {(a.author ?? "SLSB") +
                   (a.publishedAt
-                    ? " — " + new Date(a.publishedAt).toLocaleDateString("fr-FR")
+                    ? " — " +
+                      new Date(a.publishedAt).toLocaleDateString("fr-FR")
                     : "")}
               </div>
             </li>
-          )
-        )}
+          );
+        })}
       </ul>
 
       {err && <p className="mt-4 text-red-600">Erreur : {err}</p>}
@@ -115,6 +138,8 @@ export default function LoadMoreList({
             <button
               onClick={() => fetchBatch(skip)}
               className="inline-block border border-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition"
+              disabled={loading}
+              aria-busy={loading}
             >
               Articles suivants (+{pageSize})
             </button>
