@@ -1,9 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import type { Route } from "next";
 import styles from "@/styles/articlecard.module.scss";
-// import styles from "@/styles/feedarticle.module.scss";
-
 
 export type Article = {
   _id: string;
@@ -27,7 +26,7 @@ function isValidHttpUrl(u?: string) {
 }
 
 export default function ArticleCard({ a }: { a: Article }) {
-  const dateText = a.publishedAt
+  const date = a.publishedAt
     ? new Date(a.publishedAt).toLocaleDateString("fr-FR", {
         day: "2-digit",
         month: "long",
@@ -37,14 +36,14 @@ export default function ArticleCard({ a }: { a: Article }) {
 
   const canShowImage = isValidHttpUrl(a.imageUrl);
 
-  // Lien détail robuste (encodage des segments)
-  const href = a.category
-    ? `/categories/${encodeURIComponent(a.category)}/${encodeURIComponent(a.slug)}`
-    : `/articles/${encodeURIComponent(a.slug)}`;
+  // typage de href compatible Next 15
+  const href =
+    (a.category
+      ? `/categories/${a.category}/${a.slug}`
+      : `/articles/${a.slug}`) as Route;
 
   return (
     <article className={styles.card}>
-      {/* Image */}
       <Link href={href} className={styles.imageWrap} aria-label={`Lire: ${a.title}`}>
         {canShowImage ? (
           <Image
@@ -53,28 +52,24 @@ export default function ArticleCard({ a }: { a: Article }) {
             width={1280}
             height={720}
             className={styles.image}
-            // Décommente en dev si tu veux éviter l’optimiseur
-            // unoptimized
             priority={false}
+            unoptimized
           />
         ) : (
           <div className={styles.noImage}>Image indisponible</div>
         )}
       </Link>
 
-      {/* Meta */}
       <div className={styles.meta}>
-        {dateText && <time dateTime={a.publishedAt}>{dateText}</time>}
+        {date && <time dateTime={a.publishedAt}>{date}</time>}
         {a.author && <span className={styles.author}>{a.author}</span>}
         {a.category && <span className={styles.category}>{a.category}</span>}
       </div>
 
-      {/* Titre */}
       <h3 className={styles.title}>
         <Link href={href}>{a.title}</Link>
       </h3>
 
-      {/* Extrait */}
       {a.excerpt && <p className={styles.excerpt}>{a.excerpt}</p>}
     </article>
   );

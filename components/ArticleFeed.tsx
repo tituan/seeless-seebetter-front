@@ -1,5 +1,6 @@
 "use client";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import ArticleCard, { type Article } from "./ArticleCard";
 import styles from "@/styles/feedarticle.module.scss";
 
@@ -7,7 +8,6 @@ type Props = {
   categories?: string[];           // ex: ["fashion"]
   pageSize?: number;
   initialSkip?: number;
-  renderItem?: (a: Article) => ReactNode;
   sort?: "newest" | "oldest";
   apiPath?: string;
 };
@@ -16,7 +16,6 @@ export default function ArticlesFeed({
   categories = [],
   pageSize = 6,
   initialSkip = 0,
-  renderItem,
   sort = "newest",
   apiPath = `${process.env.NEXT_PUBLIC_API_URL}/articles`,
 }: Props) {
@@ -28,6 +27,9 @@ export default function ArticlesFeed({
 
   const canLoadMore = total === null ? true : items.length < total;
 
+  // Clef stable pour les deps (évite categories.join(",") inline)
+  const categoriesKey = useMemo(() => categories.join(","), [categories]);
+
   const query = useMemo(() => {
     const p = new URLSearchParams();
 
@@ -35,8 +37,8 @@ export default function ArticlesFeed({
     if (categories.length === 1) {
       p.set("category", categories[0]);
     } else if (categories.length > 1) {
-      // si tu veux réellement le multi-filtre, patch backend pour "categories" CSV -> $in
-      p.set("category", categories[0]); // fallback : première catégorie
+      // Si besoin du multi-filtre, faire évoluer l’API pour accepter "categories"
+      p.set("category", categories[0]); // fallback: 1ère catégorie
     }
 
     p.set("limit", String(pageSize));
@@ -46,18 +48,20 @@ export default function ArticlesFeed({
     return p.toString();
   }, [categories, pageSize, skip, sort]);
 
-  // reset on filters change
+  // Reset quand le filtre change
   useEffect(() => {
     setItems([]);
     setTotal(null);
     setSkip(0);
-  }, [categories.join(","), pageSize, sort]);
+  }, [categoriesKey, pageSize, sort]);
 
   useEffect(() => {
     let cancelled = false;
+
     (async () => {
       setLoading(true);
       setError(null);
+
       try {
         const url = `${apiPath}?${query}`;
         const res = await fetch(url, { cache: "no-store" });
@@ -70,8 +74,9 @@ export default function ArticlesFeed({
         if (cancelled) return;
         setItems(prev => [...prev, ...list]);
         setTotal(tot);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "Erreur inconnue");
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : "Erreur inconnue";
+        if (!cancelled) setError(msg);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -84,7 +89,9 @@ export default function ArticlesFeed({
     <section className={styles.feed}>
       <ul className={styles.grid}>
         {items.map(a => (
-          <li key={a._id}>{renderItem ? renderItem(a) : <ArticleCard a={a} />}</li>
+          <li key={a._id}>
+            <ArticleCard a={a} />
+          </li>
         ))}
       </ul>
 
