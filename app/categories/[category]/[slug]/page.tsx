@@ -1,10 +1,11 @@
+// app/categories/[category]/[slug]/page.tsx
 import Container from "@/components/Container";
 import { API, fetchJSON } from "@/lib/api";
 import Link from "next/link";
 import s from "./article.module.scss";
 import DateText from "@/components/DateText";
 import { categoryLandingPath } from "@/lib/routes";
-import type { Route } from "next"; // ✅ pour typed routes
+import type { Route } from "next";
 
 export const dynamic = "force-dynamic";
 
@@ -20,42 +21,63 @@ type Article = {
   publishedAt?: string;  // ISO
 };
 
-// ✅ sur Next 15, params est asynchrone
 type PageProps = {
-  params: Promise<{ category: string; slug: string }>;
+  params: { category: string; slug: string }; // <- pas besoin de Promise ici
 };
 
+// Normalise la base API : on retire un éventuel suffixe /api
+function getApiBase() {
+  const base = API || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+  return String(base).replace(/\/api\/?$/, "");
+}
+
+async function fetchArticleByCategory(category: string, slug: string) {
+  const BASE = getApiBase();
+  const url = `${BASE}/api/articles/by-category/${encodeURIComponent(category)}/${encodeURIComponent(slug)}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as Article;
+}
+
+async function fetchArticleBySlug(slug: string) {
+  const BASE = getApiBase();
+  const url = `${BASE}/api/articles/${encodeURIComponent(slug)}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as Article;
+}
+
 export default async function ArticlePage({ params }: PageProps) {
-  const { category, slug } = await params;
+  const { category, slug } = params;
 
-  // 🔹 On tente d’abord via /by-category/:category/:slug
-  const byCategoryUrl = `${API}/api/articles/by-category/${category}/${slug}`;
+  // 1) try by (category, slug)
   let article: Article | null = null;
-
   try {
-    article = await fetchJSON<Article>(byCategoryUrl);
+    article = await fetchArticleByCategory(category, slug);
   } catch {
     article = null;
   }
 
-  // 🔹 Si non trouvé, fallback sur /api/articles/:slug
+  // 2) fallback by slug only
   if (!article?._id) {
     try {
-      const a2 = await fetchJSON<Article>(`${API}/api/articles/${slug}`);
+      const a2 = await fetchArticleBySlug(slug);
       if (a2?._id) {
         return <ArticleView category={category} article={a2} />;
       }
     } catch {
-      // rien
+      // ignore
     }
 
-    // 🔹 Si toujours rien : erreur + lien retour
+    // 3) not found
     return (
       <Container>
         <div className={s.wrap}>
           <p>Article introuvable.</p>
           <div className={s.back}>
-            <Link href={categoryLandingPath(category)}>← Retour</Link>
+            <Link href={categoryLandingPath(category) as Route}>← Retour</Link>
           </div>
         </div>
       </Container>
@@ -65,7 +87,6 @@ export default async function ArticlePage({ params }: PageProps) {
   return <ArticleView category={category} article={article} />;
 }
 
-// ✅ Composant d’affichage principal
 function ArticleView({
   category,
   article,
@@ -73,7 +94,7 @@ function ArticleView({
   category: string;
   article: Article;
 }) {
-  const backHref = categoryLandingPath(category) as Route; // ✅ typed route
+  const backHref = categoryLandingPath(category) as Route;
 
   return (
     <Container>
@@ -87,14 +108,13 @@ function ArticleView({
           </div>
         </header>
 
-        {/* ✅ Image principale */}
         {article.imageUrl && (
           <div className={s.cover}>
+            {/* <img> pour éviter les contraintes de next/image en dev */}
             <img src={article.imageUrl} alt="" />
           </div>
         )}
 
-        {/* ✅ Contenu HTML */}
         {article.content && (
           <div
             className={s.content}
@@ -102,7 +122,6 @@ function ArticleView({
           />
         )}
 
-        {/* ✅ Bouton retour vers la bonne section */}
         <div className={s.back}>
           <Link href={backHref}>← Retour aux articles</Link>
         </div>

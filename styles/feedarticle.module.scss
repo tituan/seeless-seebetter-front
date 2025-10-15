@@ -1,0 +1,21 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+.feed { width:100%; padding:20px 0; display:flex; flex-direction:column; gap:24px; }
+.grid { display:grid; gap:24px; grid-template-columns:1fr;
+  @include resp(tablet){ grid-template-columns:repeat(2,1fr); }
+  @include resp(desktop){ grid-template-columns:repeat(3,1fr); }
+}
+.ctaWrap { text-align:center; margin-top:8px; }
+.cta { display:inline-block; padding:10px 22px; border:1px solid $color-fg; border-radius:999px; color:$color-fg; background:transparent; transition:.25s;
+  &:hover{ background:$color-fg; color:$color-bg; }
+  &:disabled{ opacity:.5; cursor:not-allowed; }
+}
+.loader{ display:flex; justify-content:center; align-items:center; gap:6px; color:$color-muted; font-size:.95rem;
+  span{ width:6px; height:6px; border-radius:50%; background:$color-muted; animation:blink 1.2s infinite ease-in-out both;
+    &:nth-child(2){ animation-delay:.2s; } &:nth-child(3){ animation-delay:.4s; }
+  }
+}
+.error{ text-align:center; color:$color-error; font-size:.95rem; }
+.empty{ text-align:center; color:$color-muted; font-size:.95rem; }
+@keyframes blink{ 0%,80%,100%{opacity:.25} 40%{opacity:1} }

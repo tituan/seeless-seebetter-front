@@ -1,4 +1,3 @@
-// app/categories/[category]/page.tsx
 import { API, fetchJSON } from "@/lib/api";
 import { isCategory } from "@/lib/categories";
 import LoadMoreList from "@/components/LoadMoreList";
@@ -16,28 +15,29 @@ type Article = {
   publishedAt?: string;
 };
 
-// ✅ Types explicites (searchParams est une Promise en Next 15)
+// ✅ Types explicites pour les props Next.js App Router
 type PageProps = {
   params: { category: string };
-  searchParams: Promise<Record<string, string | undefined>>;
+  searchParams: { limit?: string; page?: string; from?: string };
 };
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const category = params.category;
-  if (!isCategory(category)) return <div className="p-8">Catégorie inconnue</div>;
 
-  // ⬇️ Attendre la promesse
-  const q = await searchParams;
+  if (!isCategory(category))
+    return <div className="p-8">Catégorie inconnue</div>;
 
-  // Cas particulier : /categories/paris (la page /paris gère le "featured")
   const isParis = category === "paris";
-  const showRest = isParis && q?.from === "featured";
+  const showRest = isParis && searchParams?.from === "featured";
 
   if (isParis && !showRest) {
+    // 🔹 Cas particulier : la page Paris “featured” (déjà gérée dans /paris/page.tsx)
     return (
       <main className="max-w-5xl mx-auto p-6">
         <h1 className="text-3xl font-semibold mb-6 capitalize">Paris</h1>
-        <p className="opacity-70 mb-6">Balades, quartiers, adresses et atmosphères.</p>
+        <p className="opacity-70 mb-6">
+          Balades, quartiers, adresses et atmosphères.
+        </p>
         <div className="mt-6 text-center">
           <Link
             href="/paris"
@@ -50,13 +50,12 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     );
   }
 
-  // 🔹 Cas général : liste d’une catégorie
-  const limit = Number(q?.limit) || 12;
-  const page = Number(q?.page) || 1;
+  // 🔹 Cas général : affichage des articles d'une catégorie
+  const limit = Number(searchParams?.limit) || 12;
+  const page = Number(searchParams?.page) || 1;
   const skip = (page - 1) * limit;
 
-  // Pré-charge (facultatif) pour afficher un message si vide
-  const { items } = await fetchJSON<{ items: Article[]; total: number }>(
+  const { items, total } = await fetchJSON<{ items: Article[]; total: number }>(
     `${API}/api/articles?category=${category}&status=published&limit=${limit}&skip=${skip}`
   );
 
@@ -67,12 +66,14 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       {!items.length ? (
         <p className="opacity-60">Aucun article disponible pour cette catégorie.</p>
       ) : (
-        <LoadMoreList
-          apiBase={API}
-          category={category}
-          initialSkip={skip}
-          pageSize={5}   // +5 par clic
-        />
+        <>
+          <LoadMoreList
+            apiBase={API}
+            category={category}
+            initialSkip={skip}
+            pageSize={5}
+          />
+        </>
       )}
     </main>
   );
