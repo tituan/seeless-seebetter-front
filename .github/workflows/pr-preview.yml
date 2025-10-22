@@ -35,7 +35,7 @@ jobs:
 
       - name: Deploy preview to Vercel
         id: vercel-deploy
-        uses: vercel/action@v1
+        uses: vercel/actions/deploy@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -52,4 +52,4 @@ jobs:
             🚀 A fresh preview deployment is ready!
 
             **Preview URL:** ${{ steps.vercel-deploy.outputs.preview-url }}
-            **Inspect:** ${{ steps.vercel-deploy.outputs.inspector-url }}
+            **Inspect:** ${{ steps.vercel-deploy.outputs.inspect-url }}
