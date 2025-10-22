@@ -1,0 +1,152 @@
+@use "./variables" as *;
+
+$nav-height: 72px;
+
+.wrapper {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: $z-header;
+}
+
+.nav {
+  background: #000;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: $nav-height;
+  gap: 1rem;
+}
+
+.brand {
+  font-size: 1.125rem;
+  font-weight: $font-bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: opacity $duration-fast $ease;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 4px;
+}
+
+.toggle:hover {
+  opacity: 0.8;
+}
+
+.bar {
+  width: 26px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform $duration-fast $ease, opacity $duration-fast $ease;
+}
+
+.barTopOpen {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.barMiddleOpen {
+  opacity: 0;
+}
+
+.barBottomOpen {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.menu {
+  position: absolute;
+  left: 0;
+  top: $nav-height;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #000;
+  padding: 1.5rem 1.25rem 2rem;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform $duration $ease, opacity $duration-fast $ease;
+}
+
+.menuOpen {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.link {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: $font-medium;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color $duration-fast ease-in-out;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: $color-accent-dark;
+}
+
+.active {
+  color: $color-accent-dark;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .toggle {
+    display: none;
+  }
+
+  .menu {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.75rem;
+    padding: 0;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    margin-left: auto;
+  }
+
+  .link {
+    font-size: 0.9rem;
+  }
+}

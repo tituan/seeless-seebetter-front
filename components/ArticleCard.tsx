@@ -60,17 +60,19 @@ export default function ArticleCard({ a }: { a: Article }) {
         )}
       </Link>
 
-      <div className={styles.meta}>
-        {date && <time dateTime={a.publishedAt}>{date}</time>}
-        {a.author && <span className={styles.author}>{a.author}</span>}
-        {a.category && <span className={styles.category}>{a.category}</span>}
+      <div className={styles.body}>
+        <div className={styles.meta}>
+          {date && <time dateTime={a.publishedAt}>{date}</time>}
+          {a.author && <span className={styles.author}>{a.author}</span>}
+          {a.category && <span className={styles.category}>{a.category}</span>}
+        </div>
+
+        <h3 className={styles.title}>
+          <Link href={href}>{a.title}</Link>
+        </h3>
+
+        {a.excerpt ? <p className={styles.excerpt}>{a.excerpt}</p> : <span className={styles.spacer} />}
       </div>
-
-      <h3 className={styles.title}>
-        <Link href={href}>{a.title}</Link>
-      </h3>
-
-      {a.excerpt && <p className={styles.excerpt}>{a.excerpt}</p>}
     </article>
   );
 }

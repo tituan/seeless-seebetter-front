@@ -1,0 +1,294 @@
+@use "@/styles/variables" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding-bottom: 4rem;
+}
+
+.intro {
+  padding-top: 6rem;
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+  color: #ffffff;
+}
+
+.introInner {
+  display: grid;
+  gap: 3rem;
+
+  @media (min-width: $breakpoint-desktop) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+}
+
+.introMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  font-weight: $font-bold;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  max-width: 34rem;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.featured {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2.4rem;
+  overflow: hidden;
+}
+
+.featured::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 55%);
+}
+
+.featuredContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  z-index: 1;
+}
+
+.featuredLabel {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.featuredName {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: $font-bold;
+  margin: 0;
+}
+
+.featuredMeta {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.featuredAddress {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.featuredDescription {
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.featuredActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.2rem;
+}
+
+.cta {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1.6rem;
+  background: #ffffff;
+  color: #000000;
+  font-weight: $font-medium;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform $duration-fast $ease, box-shadow $duration-fast $ease;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  transition: color $duration-fast ease;
+}
+
+.secondaryLink:hover {
+  color: #ffffff;
+}
+
+.listSection {
+  padding-block: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  font-weight: $font-bold;
+  margin-bottom: 1.75rem;
+  letter-spacing: 0.01em;
+}
+
+.list {
+  display: grid;
+  gap: 1.2rem;
+
+  @media (min-width: $breakpoint-tablet) {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 1.6rem;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color $duration-fast $ease, transform $duration-fast $ease,
+    box-shadow $duration-fast $ease;
+}
+
+.card:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15, 15, 15, 0.08);
+}
+
+.cardActive {
+  border-color: #000000;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.12);
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardName {
+  font-size: 1.1rem;
+  font-weight: $font-medium;
+}
+
+.cardMeta {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.cardAddress {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.cardDescription {
+  font-size: 0.88rem;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.cardHint {
+  margin-top: 1.2rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.mapSection {
+  padding-block: 2rem 4rem;
+  background: #f6f6f6;
+}
+
+.mapHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: $breakpoint-tablet) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.mapMeta {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.mapAddress {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.mapHint {
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.5);
+  max-width: 240px;
+}
+
+.mapLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #000000;
+}
+
+.mapLink:hover {
+  text-decoration: underline;
+}
+
+.mapFrame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 16px 44px rgba(15, 15, 15, 0.12);
+}
+
+.mapFrame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

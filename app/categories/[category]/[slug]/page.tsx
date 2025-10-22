@@ -22,8 +22,13 @@ type Article = {
   publishedAt?: string;  // ISO
 };
 
+type PageParams = {
+  category: string;
+  slug: string;
+};
+
 type PageProps = {
-  params: { category: string; slug: string }; // <- pas besoin de Promise ici
+  params: Promise<PageParams> | PageParams;
 };
 
 // Normalise la base API : on retire un éventuel suffixe /api
@@ -51,7 +56,7 @@ async function fetchArticleBySlug(slug: string) {
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const { category, slug } = params;
+  const { category, slug } = await Promise.resolve(params);
 
   // 1) try by (category, slug)
   let article: Article | null = null;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import Footer from "@/components/Footer";
+import Nav from "@/components/Nav";
 import styles from "@/styles/layout.module.scss";
 import "./globals.css";
 
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${styles.body}`}>
         <div className={styles.app}>
+          <Nav />
           <main className={styles.main}>{children}</main>
           <Footer />
         </div>

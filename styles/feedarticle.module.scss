@@ -3,6 +3,7 @@
 
 .feed { width:100%; padding:20px 0; display:flex; flex-direction:column; gap:24px; }
 .grid { display:grid; gap:24px; grid-template-columns:1fr;
+  li { height:100%; }
   @include resp(tablet){ grid-template-columns:repeat(2,1fr); }
   @include resp(desktop){ grid-template-columns:repeat(3,1fr); }
 }

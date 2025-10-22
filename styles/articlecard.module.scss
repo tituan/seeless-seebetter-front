@@ -7,6 +7,9 @@
   overflow: hidden;
   background: $color-bg-alt;
   transition: transform $duration $ease, box-shadow $duration $ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &:hover {
     transform: translateY(-2px);
@@ -43,6 +46,14 @@
   }
 }
 
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 12px 14px 16px;
+  gap: 10px;
+}
+
 .meta {
   display: flex;
   gap: 6px;
@@ -50,7 +61,6 @@
   flex-wrap: wrap;
   color: $color-muted;
   font-size: .8rem;
-  margin: 10px 12px 0;
 
   .author::before {
     content: "•";
@@ -69,7 +79,6 @@
 }
 
 .title {
-  margin: 6px 12px 0;
   font-family: $font-main;
   font-weight: $font-medium;
   font-size: 1.05rem;
@@ -91,14 +100,20 @@
 }
 
 .excerpt {
-  margin: 6px 12px 12px;
   color: $color-muted;
   font-size: .95rem;
   line-height: 1.4;
+  margin-top: auto;
 
   /* clamp sur 3 lignes */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.spacer {
+  margin-top: auto;
+  flex: 1 1 auto;
+  visibility: hidden;
 }

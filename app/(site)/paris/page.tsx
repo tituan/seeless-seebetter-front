@@ -1,12 +1,11 @@
-import ArticlesFeed from "@/components/ArticleFeed";
+import CategoryPage from '@/components/CategoryPage';
 
-export default function FashionPage() {
+export default function ParisPage() {
   return (
-    <main className="px-6 py-12">
-      <h1 className="text-3xl font-light mb-8">Articles Paris</h1>
-
-      {/* Liste des articles filtrés par la catégorie "paris" */}
-      <ArticlesFeed categories={["paris"]} pageSize={6} />
-    </main>
+    <CategoryPage
+      title="Paris & bonnes adresses"
+      description="Parcours, quartiers, rendez-vous et experiences a vivre dans la capitale."
+      categories={['paris']}
+    />
   );
 }
