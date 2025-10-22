@@ -1,29 +1,66 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useRef, useState } from 'react';
 
 import Container from '@/components/Container';
 import type { Shop } from '@/data/shops';
 import { shops } from '@/data/shops';
+import starcowProducts from '@/data/starcow-outlet.json';
+import opiumProducts from '@/data/opium-outlet.json';
 
 import styles from './shopping.module.scss';
 
-const featuredShop = shops[0];
-const otherShops = shops.slice(1);
+type OutletProduct = {
+  title: string;
+  url: string;
+  imageUrl?: string;
+  price?: string;
+  originalPrice?: string;
+  discount?: string;
+  brand?: string;
+  sizes?: string[];
+};
+
+const outletData: Record<string, OutletProduct[]> = {
+  starcow: (starcowProducts as OutletProduct[]) ?? [],
+  opium: (opiumProducts as OutletProduct[]) ?? [],
+};
+
+const PRODUCTS_LIMIT = 20;
 
 export default function ShoppingPage() {
+  const shopsWithProducts = shops.filter((shop) => (outletData[shop.id] ?? []).length > 0);
+  const activeShops = shopsWithProducts.length > 0 ? shopsWithProducts : shops.slice(0, 1);
+  const featuredShop = activeShops[0] ?? shops[0];
+  const shopOptions = activeShops;
+
   const [selectedShopId, setSelectedShopId] = useState<string>(featuredShop.id);
   const mapSectionRef = useRef<HTMLDivElement | null>(null);
+  const productSectionRef = useRef<HTMLDivElement | null>(null);
 
   const selectedShop: Shop = useMemo(
     () => shops.find((shop) => shop.id === selectedShopId) ?? featuredShop,
+    [selectedShopId, featuredShop]
+  );
+
+  const productsForSelected = useMemo(
+    () => (outletData[selectedShopId] ?? []).slice(0, PRODUCTS_LIMIT),
     [selectedShopId]
   );
 
+  const totalProducts = (outletData[selectedShopId] ?? []).length;
+
+  const hasProducts = productsForSelected.length > 0;
+  const selectedShopShortName =
+    selectedShop.name.split(' ')[0] ?? selectedShop.name;
+
   const handleSelectShop = (shopId: string) => {
     setSelectedShopId(shopId);
-    if (mapSectionRef.current) {
-      mapSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const hasProducts = (outletData[shopId] ?? []).length > 0;
+    const target = hasProducts ? productSectionRef.current : mapSectionRef.current;
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -42,26 +79,26 @@ export default function ShoppingPage() {
             <div className={styles.featuredContent}>
               <span className={styles.featuredLabel}>Spot du moment</span>
               <h2 id="featured-shop-heading" className={styles.featuredName}>
-                {featuredShop.name}
+                {selectedShop.name}
               </h2>
               <p className={styles.featuredMeta}>
-                {featuredShop.style} · {featuredShop.district}
+                {selectedShop.style} · {selectedShop.district}
               </p>
-              <p className={styles.featuredAddress}>{featuredShop.address}</p>
-              {featuredShop.description ? (
-                <p className={styles.featuredDescription}>{featuredShop.description}</p>
+              <p className={styles.featuredAddress}>{selectedShop.address}</p>
+              {selectedShop.description ? (
+                <p className={styles.featuredDescription}>{selectedShop.description}</p>
               ) : null}
               <div className={styles.featuredActions}>
                 <button
                   type="button"
                   className={styles.cta}
-                  onClick={() => handleSelectShop(featuredShop.id)}
+                  onClick={() => handleSelectShop(selectedShop.id)}
                 >
                   Voir sur la carte
                 </button>
-                {featuredShop.website ? (
+                {selectedShop.website ? (
                   <a
-                    href={featuredShop.website}
+                    href={selectedShop.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.secondaryLink}
@@ -78,10 +115,10 @@ export default function ShoppingPage() {
       <section className={styles.listSection} aria-labelledby="list-heading">
         <Container>
           <h2 id="list-heading" className={styles.sectionTitle}>
-            D&apos;autres adresses à explorer
+            Les adresses en promotion
           </h2>
           <div className={styles.list}>
-            {otherShops.map((shop) => (
+            {shopOptions.map((shop) => (
               <button
                 type="button"
                 key={shop.id}
@@ -105,6 +142,112 @@ export default function ShoppingPage() {
               </button>
             ))}
           </div>
+        </Container>
+      </section>
+
+      <section
+        ref={productSectionRef}
+        className={styles.outletSection}
+        aria-labelledby="outlet-heading"
+      >
+        <Container>
+          <div className={styles.outletHeader}>
+            <div className={styles.outletHeaderTitle}>
+              <span className={styles.badgeLight}>Outlet</span>
+              <span className={styles.outletShopName}>{selectedShop.name}</span>
+              <h2 id="outlet-heading" className={`${styles.sectionTitle} ${styles.outletHeading}`}>
+                Selection {selectedShop.name}
+              </h2>
+              {hasProducts ? (
+                <span className={styles.outletCount}>
+                  {productsForSelected.length}
+                  {totalProducts > PRODUCTS_LIMIT
+                    ? ` articles en promotion (sur ${totalProducts})`
+                    : ' articles en promotion'}
+                </span>
+              ) : null}
+            </div>
+            <p className={styles.outletSubtitle}>
+              {hasProducts
+                ? `Pieces reperees dans les soldes de ${selectedShop.name}. Stocks et tarifs susceptibles d'evoluer — verifiez la disponibilite avant de vous deplacer.`
+                : `Pas encore de selection active pour ${selectedShop.name}. Revenez bientot pour de nouvelles trouvailles.`}
+            </p>
+          </div>
+
+          {hasProducts ? (
+            <div className={styles.outletGrid}>
+              {productsForSelected.map((product) => (
+                <a
+                  key={`${product.url}-${product.title}`}
+                  href={product.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.outletCard}
+                >
+                  <div className={styles.outletImageWrap}>
+                    {product.imageUrl ? (
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.title}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className={styles.outletImage}
+                      />
+                    ) : (
+                      <span className={styles.outletNoImage}>Image indisponible</span>
+                    )}
+                  </div>
+                  <div className={styles.outletBody}>
+                    {product.brand ? (
+                      <span className={styles.outletBrand}>{product.brand}</span>
+                    ) : null}
+                    <span className={styles.outletTitle}>{product.title}</span>
+
+                    {product.discount || product.price || product.originalPrice ? (
+                      <div className={styles.outletPriceBlock}>
+                        {product.discount ? (
+                          <span className={styles.outletDiscount}>{product.discount}</span>
+                        ) : null}
+                        {product.price || product.originalPrice ? (
+                          <div className={styles.outletPrices}>
+                            {product.price ? (
+                              <span className={styles.outletPrice}>{product.price}</span>
+                            ) : null}
+                            {product.originalPrice ? (
+                              <span className={styles.outletOriginalPrice}>
+                                {product.originalPrice}
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    {product.sizes?.length ? (
+                      <div className={styles.outletSizes}>
+                        {product.sizes.slice(0, 6).map((size) => (
+                          <span
+                            key={`${product.url}-${size}`}
+                            className={styles.outletSize}
+                          >
+                            {size}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <span className={styles.outletLink}>
+                      Voir sur {selectedShopShortName} →
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.outletEmpty}>
+              Nous travaillons sur une selection pour cette adresse. Revenez bientot.
+            </p>
+          )}
         </Container>
       </section>
 

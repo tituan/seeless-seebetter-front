@@ -24,6 +24,18 @@ export const shops: Shop[] = [
     mapUrl: "https://www.google.com/maps?q=Starcow+Paris&output=embed",
   },
   {
+    id: "opium",
+    name: "Opium Paris",
+    style: "Sneakers & editions limitees",
+    district: "1er arrondissement",
+    address: "19 Rue Pierre Lescot, 75001 Paris",
+    phone: "+33 9 81 79 51 61",
+    website: "https://www.opiumparis.com",
+    description:
+      "Exclusivités, séries limitées et modèles pointus dans une boutique à l’ambiance futuriste.",
+    mapUrl: "https://www.google.com/maps?q=Opium+Paris&output=embed",
+  },
+  {
     id: "centre-commercial",
     name: "Centre Commercial",
     style: "Mode responsable",

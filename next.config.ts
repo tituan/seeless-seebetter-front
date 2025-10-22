@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
       'res.cloudinary.com',  // si tu utilises Cloudinary
       'images.unsplash.com', // si tu utilises Unsplash
       'localhost',
+      'www.starcowparis.com',
+      'media1.opiumparis.com',
     ],
     // Patterns avancés (avec protocole/port)
     remotePatterns: [
@@ -24,6 +26,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'picsum.photos' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'www.starcowparis.com' },
+      { protocol: 'https', hostname: 'media1.opiumparis.com' },
     ],
   },
 };

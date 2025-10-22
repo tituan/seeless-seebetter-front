@@ -43,6 +43,19 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+.badgeLight {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.55);
+}
+
 .title {
   font-size: clamp(2rem, 5vw, 3.25rem);
   line-height: 1.1;
@@ -228,6 +241,182 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: rgba(0, 0, 0, 0.45);
+}
+
+.outletSection {
+  padding-block: 3rem;
+  background: #ffffff;
+}
+
+.outletHeader {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media (min-width: $breakpoint-tablet) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.outletHeaderTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.outletHeading {
+  margin: 0;
+}
+
+.outletCount {
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.outletShopName {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.outletSubtitle {
+  max-width: 40rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.outletGrid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.outletCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fafafa;
+  text-decoration: none;
+  color: inherit;
+  transition: transform $duration-fast $ease, box-shadow $duration-fast $ease,
+    border-color $duration-fast $ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 32px rgba(15, 15, 15, 0.1);
+  }
+}
+
+.outletImageWrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #f0f0f0;
+}
+
+.outletImage {
+  object-fit: contain;
+}
+
+.outletNoImage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.outletBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.2rem 1.3rem 1.4rem;
+}
+
+.outletBrand {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.outletPriceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.outletDiscount {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #d84747;
+}
+
+.outletPrices {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+}
+
+.outletTitle {
+  font-size: 1rem;
+  font-weight: $font-medium;
+  line-height: 1.35;
+}
+
+.outletPrice {
+  font-size: 1rem;
+  font-weight: $font-bold;
+}
+
+.outletOriginalPrice {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.45);
+  text-decoration: line-through;
+}
+
+.outletSizes {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.outletSize {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.outletLink {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.outletEmpty {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .mapSection {
