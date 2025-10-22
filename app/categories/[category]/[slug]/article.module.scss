@@ -33,17 +33,16 @@ $text-muted: rgba(0,0,0,.65);
 }
 
 .cover {
+  position: relative;
   margin: 16px 0 22px 0;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid $border;
+  height: clamp(220px, 45vw, 460px);
+}
 
-  img {
-    display: block;
-    width: 100%;
-    height: clamp(220px, 45vw, 460px);
-    object-fit: cover;
-  }
+.coverImage {
+  object-fit: cover;
 }
 
 .content {
