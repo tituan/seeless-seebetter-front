@@ -1,0 +1,60 @@
+@use "./variables" as *;
+
+.page {
+  padding: 3rem 0 4rem;
+  line-height: 1.7;
+  color: $color-fg;
+}
+
+.title {
+  font-size: clamp(2rem, 2.5vw, 2.75rem);
+  font-weight: $font-bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.intro {
+  margin-bottom: 2rem;
+  color: $color-muted;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.section {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.section h2 {
+  font-size: 1.3rem;
+  font-weight: $font-medium;
+}
+
+.section p,
+.section li {
+  color: $color-muted;
+  font-size: 1rem;
+}
+
+.section ul {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.section a {
+  color: $color-accent;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .page {
+    padding-top: 4rem;
+    padding-bottom: 5rem;
+  }
+
+  .section {
+    gap: 1rem;
+  }
+}
