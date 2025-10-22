@@ -55,7 +55,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   const page = Number(searchParams?.page) || 1;
   const skip = (page - 1) * limit;
 
-  const { items, total } = await fetchJSON<{ items: Article[]; total: number }>(
+  const { items } = await fetchJSON<{ items: Article[]; total: number }>(
     `${API}/api/articles?category=${category}&status=published&limit=${limit}&skip=${skip}`
   );
 

@@ -1,7 +1,8 @@
 // app/categories/[category]/[slug]/page.tsx
 import Container from "@/components/Container";
-import { API, fetchJSON } from "@/lib/api";
+import { API } from "@/lib/api";
 import Link from "next/link";
+import Image from "next/image";
 import s from "./article.module.scss";
 import DateText from "@/components/DateText";
 import { categoryLandingPath } from "@/lib/routes";
@@ -110,8 +111,14 @@ function ArticleView({
 
         {article.imageUrl && (
           <div className={s.cover}>
-            {/* <img> pour éviter les contraintes de next/image en dev */}
-            <img src={article.imageUrl} alt="" />
+            <Image
+              src={article.imageUrl}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 880px"
+              className={s.coverImage}
+              priority
+            />
           </div>
         )}
 
